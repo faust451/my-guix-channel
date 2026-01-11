@@ -57,4 +57,4 @@
      "gh is GitHub on the command line. It brings pull requests, issues,
 GitHub Actions, and other GitHub features to your terminal.")
     (home-page "https://cli.github.com/")
-    (license license:expat)))
+    (license license:nonfree)))
