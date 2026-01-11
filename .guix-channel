@@ -1,7 +1,8 @@
 ;; ~/guix-packages/.guix-channel
 (channel
   (version 0)
+  (directory "modules") 
   (dependencies
-    (channel
-      (name nonguix)
-      (url "https://gitlab.com/nonguix/nonguix"))))
+   (channel
+    (name nonguix)
+    (url "https://gitlab.com/nonguix/nonguix"))))
