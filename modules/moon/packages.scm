@@ -1,8 +1,9 @@
-(use-modules (guix packages)
-             (guix download)
-             (guix gexp)
-             (nonguix build-system binary)
-             ((nonguix licenses) #:prefix license:))
+(define-module (moon packages)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (nonguix build-system binary)
+  #:use-module ((nonguix licenses) #:prefix license:))
 
 (define-public claude-cli
   (package
