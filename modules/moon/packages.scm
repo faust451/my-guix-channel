@@ -4,7 +4,8 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system copy)
   #:use-module (nonguix build-system binary)
-  #:use-module ((nonguix licenses) #:prefix license:))
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module ((nonguix licenses) #:prefix nonfree:))
 
 (define-public claude-cli
   (package
@@ -33,7 +34,7 @@
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
    (home-page "https://docs.anthropic.com/en/docs/claude-code")
-   (license (license:nonfree "https://www.anthropic.com/legal/consumer-terms"))))
+   (license (nonfree:nonfree "https://www.anthropic.com/legal/consumer-terms"))))
 
 (define-public github-cli
   (package
@@ -57,4 +58,4 @@
      "gh is GitHub on the command line. It brings pull requests, issues,
 GitHub Actions, and other GitHub features to your terminal.")
     (home-page "https://cli.github.com/")
-    (license license:nonfree)))
+    (license license:expat)))
