@@ -27,16 +27,21 @@
      #:validate-runpath? #f
      #:strip-binaries? #f
      #:install-plan #~'(("claude" "bin/claude"))
-     #:patchelf-plan 
-     #~'(("claude" 
-          ("gcc-toolchain" "musl")
-          #:interpreter "musl"))
+     #:patchelf-plan #~'(("claude" ("gcc-toolchain" "musl")))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
-				 (chmod "claude" #o755))))))
+				 (chmod "claude" #o755)))
+                      (add-after 'patchelf 'set-interpreter
+                        (lambda* (#:key inputs outputs #:allow-other-keys)
+                          (let ((musl (assoc-ref inputs "musl"))
+                                (out (assoc-ref outputs "out")))
+                            (invoke "patchelf" "--set-interpreter"
+                                    (string-append musl "/lib/ld-musl-x86_64.so.1")
+                                    (string-append out "/bin/claude"))))))))
+   (native-inputs (list patchelf))
    (inputs (list gcc-toolchain musl))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
