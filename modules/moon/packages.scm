@@ -7,9 +7,8 @@
   #:use-module ((guix licenses) #:select (expat gpl3+))
   #:use-module ((nonguix licenses) #:select (nonfree))
   #:use-module (gnu packages commencement)
-  #:use-module (gnu packages musl))
-
-;; https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.11/linux-x64-musl/claude
+  #:use-module (gnu packages musl)
+  #:use-module (gnu packages elf))
 
 (define-public claude-cli
   (package
@@ -48,7 +47,6 @@
    (description "AI-powered coding assistant for the terminal.")
    (home-page "https://docs.anthropic.com/en/docs/claude-code")
    (license (nonfree "https://www.anthropic.com/legal/consumer-terms"))))
-
 (define-public github-cli
   (package
     (name "github-cli")
