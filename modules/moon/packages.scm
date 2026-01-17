@@ -5,7 +5,9 @@
   #:use-module (guix build-system copy)
   #:use-module (nonguix build-system binary)
   #:use-module ((guix licenses) #:select (expat gpl3+))
-  #:use-module ((nonguix licenses) #:select (nonfree)))
+  #:use-module ((nonguix licenses) #:select (nonfree))
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages musl))
 
 ;; https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.11/linux-x64-musl/claude
 (define-public claude-cli
@@ -24,13 +26,14 @@
      #:validate-runpath? #f
      #:strip-binaries? #f
      #:install-plan #~'(("claude" "bin/claude"))
+     #:patchelf-plan #~'(("claude" ("gcc:lib" "musl")))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755))))))
-   ;; (inputs (list `(,gcc "lib") glibc))
+   (inputs (list `(,gcc "lib") musl))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
