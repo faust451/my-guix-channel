@@ -6,7 +6,8 @@
   #:use-module (nonguix build-system binary)
   #:use-module ((guix licenses) #:select (expat gpl3+))
   #:use-module ((nonguix licenses) #:select (nonfree))
-  #:use-module (gnu packages gcc))
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages commencement))
 
 (define-public claude-cli
   (package
@@ -17,19 +18,19 @@
             (uri (string-append
                   "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
                   version "/linux-x64/claude"))
-            (sha256 (base32 "0qz2zvz56cmwfh6i2c94qh1wsh9xqny021ikhafg3vsz7mhwqycx"))))
+            (sha256 (base32 "0nsxkz3b9dy95f6cxdywqnf96rgw1xphfkxvhhz85njdpa1h8vms"))))
    (build-system binary-build-system)
    (arguments
     (list
      #:install-plan #~'(("claude" "bin/claude"))
-     #:patchelf-plan #~'(("claude" ("gcc" "gcc:lib")))
+     #:patchelf-plan #~'(("claude" ("gcc-toolchain")))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755))))))
-   (inputs (list gcc `(,gcc "lib")))
+   (inputs (list gcc-toolchain))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
