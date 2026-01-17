@@ -17,7 +17,7 @@
             (uri (string-append
                   "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
                   version "/linux-x64/claude"))
-            (sha256 (base32 "HASH-FROM-GUIX-HASH-COMMAND"))))
+            (sha256 (base32 "0qz2zvz56cmwfh6i2c94qh1wsh9xqny021ikhafg3vsz7mhwqycx"))))
    (build-system binary-build-system)
    (arguments
     (list
