@@ -7,16 +7,17 @@
   #:use-module ((guix licenses) #:select (expat gpl3+))
   #:use-module ((nonguix licenses) #:select (nonfree)))
 
+;; https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.11/linux-x64-musl/claude
 (define-public claude-cli
   (package
    (name "claude-cli")
-   (version "2.0.67")
+   (version "2.1.11")
    (source (origin
             (method url-fetch)
             (uri (string-append
                   "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
                   version "/linux-x64-musl/claude"))
-            (sha256 (base32 "1wr6cxrf608z22adhjwvx1rinxyv3rbjls00j3si8f6zsmwj58dj"))))
+            (sha256 (base32 "0r8hwxswgaidjrmz9b7yv6baa915bkdd6w602x8l1r9w13vbm54i"))))
    (build-system binary-build-system)
    (arguments
     (list
