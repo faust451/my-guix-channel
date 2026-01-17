@@ -33,12 +33,16 @@
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755)))
-                      (add-after 'install 'set-interpreter
+                      (add-after 'install 'set-interpreter-and-rpath
                         (lambda* (#:key inputs outputs #:allow-other-keys)
                           (let ((musl (assoc-ref inputs "musl"))
+                                (gcc (assoc-ref inputs "gcc-toolchain"))
                                 (out (assoc-ref outputs "out")))
-                            (invoke "patchelf" "--set-interpreter"
+                            (invoke "patchelf" 
+                                    "--set-interpreter"
                                     (string-append musl "/lib/ld-musl-x86_64.so.1")
+                                    "--set-rpath"
+                                    (string-append gcc "/lib:" musl "/lib")
                                     (string-append out "/bin/claude"))))))))
    (native-inputs (list patchelf))
    (inputs (list gcc-toolchain musl))
