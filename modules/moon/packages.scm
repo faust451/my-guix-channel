@@ -30,7 +30,7 @@
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755))))))
-   (inputs (list `(,gcc "lib") glibc))
+   ;; (inputs (list `(,gcc "lib") glibc))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
