@@ -6,9 +6,7 @@
   #:use-module (nonguix build-system binary)
   #:use-module ((guix licenses) #:select (expat gpl3+))
   #:use-module ((nonguix licenses) #:select (nonfree))
-  #:use-module (gnu packages commencement)
-  #:use-module (gnu packages musl)
-  #:use-module (gnu packages elf))
+  #:use-module (gnu packages gcc))
 
 (define-public claude-cli
   (package
@@ -18,34 +16,20 @@
             (method url-fetch)
             (uri (string-append
                   "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
-                  version "/linux-x64-musl/claude"))
-            (sha256 (base32 "0r8hwxswgaidjrmz9b7yv6baa915bkdd6w602x8l1r9w13vbm54i"))))
+                  version "/linux-x64/claude"))
+            (sha256 (base32 "HASH-FROM-GUIX-HASH-COMMAND"))))
    (build-system binary-build-system)
    (arguments
     (list
-     #:validate-runpath? #f
-     #:strip-binaries? #f
      #:install-plan #~'(("claude" "bin/claude"))
-     #:patchelf-plan #~'(("claude" ("gcc-toolchain" "musl")))
+     #:patchelf-plan #~'(("claude" ("gcc" "gcc:lib")))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
-				 (chmod "claude" #o755)))
-                      (add-after 'install 'set-interpreter-and-rpath
-                        (lambda* (#:key inputs outputs #:allow-other-keys)
-                          (let ((musl (assoc-ref inputs "musl"))
-                                (gcc (assoc-ref inputs "gcc-toolchain"))
-                                (out (assoc-ref outputs "out")))
-                            (invoke "patchelf" 
-                                    "--set-interpreter"
-                                    (string-append musl "/lib/ld-musl-x86_64.so.1")
-                                    "--set-rpath"
-                                    (string-append gcc "/lib:" musl "/lib")
-                                    (string-append out "/bin/claude"))))))))
-   (native-inputs (list patchelf))
-   (inputs (list gcc-toolchain musl))
+				 (chmod "claude" #o755))))))
+   (inputs (list gcc `(,gcc "lib")))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
