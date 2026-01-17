@@ -26,14 +26,15 @@
      #:validate-runpath? #f
      #:strip-binaries? #f
      #:install-plan #~'(("claude" "bin/claude"))
-     #:patchelf-plan #~'(("claude" ("gcc:lib" "musl")))
+     #:patchelf-plan #~'(("claude" ("gcc" "musl")))
+     ;; #:patchelf-plan #~'(("claude" ("gcc:lib" "musl")))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755))))))
-   (inputs (list `(,gcc "lib") musl))
+   (inputs (list gcc musl))
    (supported-systems '("x86_64-linux"))
    (synopsis "Claude Code CLI from Anthropic")
    (description "AI-powered coding assistant for the terminal.")
