@@ -27,7 +27,10 @@
      #:validate-runpath? #f
      #:strip-binaries? #f
      #:install-plan #~'(("claude" "bin/claude"))
-     #:patchelf-plan #~'(("claude" ("gcc-toolchain" "musl")))
+     #:patchelf-plan 
+     #~'(("claude" 
+          ("gcc-toolchain" "musl")
+          #:interpreter "musl"))
      #:phases
      #~(modify-phases %standard-phases
 		      (replace 'unpack
