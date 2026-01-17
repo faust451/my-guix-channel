@@ -33,7 +33,7 @@
 			       (lambda* (#:key source #:allow-other-keys)
 				 (copy-file source "claude")
 				 (chmod "claude" #o755)))
-                      (add-after 'patchelf 'set-interpreter
+                      (add-after 'install 'set-interpreter
                         (lambda* (#:key inputs outputs #:allow-other-keys)
                           (let ((musl (assoc-ref inputs "musl"))
                                 (out (assoc-ref outputs "out")))
