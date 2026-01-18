@@ -1,55 +1,45 @@
 (define-module (moon packages)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module (guix search-paths)
   #:use-module ((nonguix licenses) #:select (nonfree))
   #:use-module ((guix licenses) #:select (expat))
   #:use-module (guix build-system copy)
+  #:use-module (gnu packages gcc)
+  #:use-module (nonguix build-system binary)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages commencement)
-  #:use-module (gnu packages elf))
+  #:use-module (gnu packages commencement))
 
 (define-public claude-cli
   (package
-   (name "claude-cli")
-   (version "2.1.11")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
-                  version "/linux-x64/claude"))
-            (sha256 (base32 "0qz2zvz56cmwfh6i2c94qh1wsh9xqny021ikhafg3vsz7mhwqycx"))))
-   (build-system copy-build-system)
-   (arguments
-    (list
-     #:validate-runpath? #f
-     #:strip-binaries? #f
-     #:install-plan #~'(("claude" "bin/claude"))
-     #:phases
-     #~(modify-phases %standard-phases
-         (add-after 'unpack 'chmod
-           (lambda _
-             (chmod "claude" #o755)))
-         (add-after 'install 'patch-interpreter
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (patchelf (string-append (assoc-ref inputs "patchelf") "/bin/patchelf"))
-                    (ld.so (string-append (assoc-ref inputs "glibc") "/lib/ld-linux-x86-64.so.2")))
-               (invoke patchelf "--set-interpreter" ld.so
-                       (string-append out "/bin/claude"))))))))
-   (native-inputs (list patchelf))
-   (propagated-inputs (list glibc gcc-toolchain))
-   (native-search-paths
-    (list (search-path-specification
-           (variable "LD_LIBRARY_PATH")
-           (files '("lib")))))
-   (supported-systems '("x86_64-linux"))
-   (synopsis "Claude Code CLI from Anthropic")
-   (description "AI-powered coding assistant for the terminal.")
-   (home-page "https://docs.anthropic.com/en/docs/claude-code")
-   (license (nonfree "https://www.anthropic.com/legal/consumer-terms"))))
+    (name "claude-cli")
+    (version "2.1.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
+                    version "/linux-x64/claude"))
+              (sha256 (base32 "0qz2zvz56cmwfh6i2c94qh1wsh9xqny021ikhafg3vsz7mhwqycx"))))
+    (build-system binary-build-system)
+    (arguments
+     (list
+      #:validate-runpath? #f
+      #:strip-binaries? #f
+      #:install-plan #~'(("claude" "bin/claude"))
+      ;; empty list = only patch interpreter, no rpath
+      #:patchelf-plan #~'(("claude" ()))  
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chmod
+            (lambda _
+              (chmod "claude" #o755))))))
+    (inputs (list glibc))
+    (supported-systems '("x86_64-linux"))
+    (synopsis "Claude Code CLI from Anthropic")
+    (description "AI-powered coding assistant for the terminal.")
+    (home-page "https://docs.anthropic.com/en/docs/claude-code")
+    (license (nonfree "https://www.anthropic.com/legal/consumer-terms"))))
 
 (define-public github-cli
   (package
