@@ -120,7 +120,7 @@
          ("example-deps.edn" "lib/clojure/")
          ("tools.edn" "lib/clojure/")
          ("exec.jar" "lib/clojure/libexec/")
-         (,(string-append "clojure-tools-" ,version ".jar") 
+         (,(string-append "clojure-tools-" ,version ".jar")
           "lib/clojure/libexec/clojure-tools.jar")
          ("clojure" "bin/")
          ("clj" "bin/"))
@@ -131,10 +131,13 @@
              (let* ((out (assoc-ref outputs "out"))
                     (lib (string-append out "/lib/clojure"))
                     (libexec (string-append lib "/libexec")))
+               ;; Add JVM args for jdk.compiler module access (needed by orchard/CIDER)
                (substitute* "clojure"
                  (("PREFIX") lib)
                  (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
-                  (string-append libexec "/clojure-tools.jar")))
+                  (string-append libexec "/clojure-tools.jar"))
+                 (("exec java")
+                  "exec java --add-modules=ALL-SYSTEM --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"))
                (substitute* "clj"
                  (("BINDIR") (string-append out "/bin"))
                  (("rlwrap") (search-input-file inputs "/bin/rlwrap")))))))))
