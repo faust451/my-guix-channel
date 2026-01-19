@@ -105,14 +105,14 @@
 (define-public clojure-tools-moon
   (package
     (name "clojure-tools-moon")
-    (version "1.11.1.1413")
+    (version "1.12.4.1582")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.clojure.org/install/clojure-tools-"
                            version
                            ".tar.gz"))
-       (sha256 (base32 "1q0z71ifdxwvyy9gvq8mx8jbygf8cszrlhb3h22walfamnisbhwk"))))
+       (sha256 (base32 "08gzfblnz0zhnk6pwr9vcm6y168psgrwmqww3wqk1v7j5gr68n7x"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
