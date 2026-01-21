@@ -104,50 +104,61 @@
 
 (define-public clojure-tools-moon
   (package
-    (name "clojure-tools-moon")
-    (version "1.12.4.1582")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.clojure.org/install/clojure-tools-"
-                           version
-                           ".tar.gz"))
-       (sha256 (base32 "08gzfblnz0zhnk6pwr9vcm6y168psgrwmqww3wqk1v7j5gr68n7x"))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       `(("deps.edn" "lib/clojure/")
-         ("example-deps.edn" "lib/clojure/")
-         ("tools.edn" "lib/clojure/")
-         ("exec.jar" "lib/clojure/libexec/")
-         (,(string-append "clojure-tools-" ,version ".jar")
-          "lib/clojure/libexec/clojure-tools.jar")
-         ("clojure" "bin/")
-         ("clj" "bin/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib/clojure"))
-                    (libexec (string-append lib "/libexec")))
-               ;; Add JVM args for jdk.compiler module access (needed by orchard/CIDER)
-               (substitute* "clojure"
-                 (("PREFIX") lib)
-                 (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
-                  (string-append libexec "/clojure-tools.jar"))
-                 (("exec java")
-                  "exec java --add-modules=ALL-SYSTEM --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"))
-               (substitute* "clj"
-                 (("BINDIR") (string-append out "/bin"))
-                 (("rlwrap") (search-input-file inputs "/bin/rlwrap")))))))))
-    (inputs (list rlwrap))
-    (propagated-inputs (list clojure clojure-tools-deps))
-    (home-page "https://clojure.org/releases/tools")
-    (synopsis "CLI tools for the Clojure programming language")
-    (description "The Clojure command line tools can be used to start a
+   (name "clojure-tools-moon")
+   (version "1.12.4.1582")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append "https://download.clojure.org/install/clojure-tools-"
+                         version
+                         ".tar.gz"))
+     (sha256 (base32 "08gzfblnz0zhnk6pwr9vcm6y168psgrwmqww3wqk1v7j5gr68n7x"))))
+   (build-system copy-build-system)
+   (arguments
+    `(#:install-plan
+      `(("deps.edn" "lib/clojure/")
+        ("example-deps.edn" "lib/clojure/")
+        ("tools.edn" "lib/clojure/")
+        ("exec.jar" "lib/clojure/libexec/")
+        (,(string-append "clojure-tools-" ,version ".jar")
+         "lib/clojure/libexec/clojure-tools.jar")
+        ("clojure" "bin/")
+        ("clj" "bin/"))
+      #:phases
+      (modify-phases
+       %standard-phases
+       (add-after 'unpack 'fix-paths
+		  (lambda* (#:key inputs outputs #:allow-other-keys)
+		    (let* ((out (assoc-ref outputs "out"))
+			   (lib (string-append out "/lib/clojure"))
+			   (libexec (string-append lib "/libexec")))
+		      ;; Add JVM args for jdk.compiler module access (needed by orchard/CIDER)
+		      (substitute*
+		       "clojure"
+		       (("PREFIX") lib)
+		       (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
+			(string-append libexec "/clojure-tools.jar"))
+		       (("exec java")
+			(string-append "exec java "
+				       "--add-modules=ALL-SYSTEM "
+				       "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.source.doctree=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.source.tree=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.source.util=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED "
+				       "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")))
+		      (substitute*
+		       "clj"
+		       (("BINDIR") (string-append out "/bin"))
+		       (("rlwrap") (search-input-file inputs "/bin/rlwrap")))))))))
+   (inputs (list rlwrap))
+   (propagated-inputs (list clojure clojure-tools-deps))
+   (home-page "https://clojure.org/releases/tools")
+   (synopsis "CLI tools for the Clojure programming language")
+   (description "The Clojure command line tools can be used to start a
 Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
-    (license license:epl1.0)))
+   (license license:epl1.0)))
 
 (define-public ruby-lsp
   (package
