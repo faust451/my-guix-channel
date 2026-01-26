@@ -12,7 +12,8 @@
   #:use-module (gnu packages gcc)
   #:use-module (nonguix build-system binary)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages commencement))
+  #:use-module (gnu packages commencement)
+  #:use-module ((guix licenses) #:prefix license:))
 
 (define-public claude-cli
   (package
