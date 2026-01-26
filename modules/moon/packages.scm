@@ -82,36 +82,23 @@ GitHub Actions, and other GitHub features to your terminal.")
     (build-system binary-build-system)
     (arguments
      '(#:validate-runpath? #f
-       #:patchelf-plan '()
+       #:patchelf-plan
+       '(("aws" ())
+         ("aws_completer" ()))
        #:install-plan
-       '(("." "lib/aws-cli/"))
+       '(("." "bin/"))
        #:phases
        (modify-phases %standard-phases
          (replace 'unpack
            (lambda* (#:key inputs #:allow-other-keys)
              (invoke "unzip" (assoc-ref inputs "source"))
              (chdir "aws/dist")))
-         (add-after 'install 'patch-binaries
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib/aws-cli"))
-                    (ld-linux (string-append (assoc-ref inputs "libc")
-                                             "/lib/ld-linux-x86-64.so.2")))
-               (for-each (lambda (binary)
-                           (invoke "patchelf" "--set-interpreter" ld-linux binary)
-                           (invoke "patchelf" "--set-rpath" lib binary))
-                         (list (string-append lib "/aws")
-                               (string-append lib "/aws_completer"))))))
-         (add-after 'patch-binaries 'create-symlinks
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lib (string-append out "/lib/aws-cli")))
-               (mkdir-p bin)
-               (symlink (string-append lib "/aws") (string-append bin "/aws"))
-               (symlink (string-append lib "/aws_completer") (string-append bin "/aws_completer"))))))))
-    (native-inputs (list unzip patchelf))
-    (inputs (list glibc))
+         (add-after 'patchelf 'set-rpath
+           (lambda _
+             (for-each (lambda (bin)
+                         (invoke "patchelf" "--set-rpath" "$ORIGIN" bin))
+                       '("aws" "aws_completer")))))))
+    (native-inputs (list unzip))
     (synopsis "Official Amazon AWS command-line interface")
     (description
      "The AWS Command Line Interface (CLI) is a unified tool to manage your
