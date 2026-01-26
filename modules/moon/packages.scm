@@ -2,6 +2,9 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages base)
   #:use-module (guix search-paths)
   #:use-module ((nonguix licenses) #:select (nonfree))
   #:use-module ((guix licenses) #:select (expat))
@@ -64,3 +67,53 @@
 GitHub Actions, and other GitHub features to your terminal.")
     (home-page "https://cli.github.com/")
     (license expat)))
+
+(define-public awscli
+  (package
+    (name "awscli")
+    (version "2.33.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip")
+       (sha256
+        (base32 "042j45yshsq77hrfh9n4f6agyhabcsvb7lhyckfrk4220ydrsyp2"))))
+    (build-system binary-build-system)
+    (arguments
+     '(#:validate-runpath? #f
+       #:patchelf-plan '()
+       #:install-plan
+       '(("." "lib/aws-cli/"))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'unpack
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "unzip" (assoc-ref inputs "source"))
+             (chdir "aws/dist")))
+         (add-after 'install 'patch-binaries
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib/aws-cli"))
+                    (ld-linux (string-append (assoc-ref inputs "libc")
+                                             "/lib/ld-linux-x86-64.so.2")))
+               (for-each (lambda (binary)
+                           (invoke "patchelf" "--set-interpreter" ld-linux binary)
+                           (invoke "patchelf" "--set-rpath" lib binary))
+                         (list (string-append lib "/aws")
+                               (string-append lib "/aws_completer"))))))
+         (add-after 'patch-binaries 'create-symlinks
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (lib (string-append out "/lib/aws-cli")))
+               (mkdir-p bin)
+               (symlink (string-append lib "/aws") (string-append bin "/aws"))
+               (symlink (string-append lib "/aws_completer") (string-append bin "/aws_completer"))))))))
+    (native-inputs (list unzip patchelf))
+    (inputs (list glibc))
+    (synopsis "Official Amazon AWS command-line interface")
+    (description
+     "The AWS Command Line Interface (CLI) is a unified tool to manage your
+AWS services from the command line.")
+    (home-page "https://aws.amazon.com/cli/")
+    (license license:asl2.0)))
