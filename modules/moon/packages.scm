@@ -24,7 +24,7 @@
               (uri (string-append
                     "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
                     version "/linux-x64/claude"))
-              (sha256 (base32 "1kcfa1czmn5vzvmn336ra5rnnnwisfp6f4vksr1ckbgfr6f9qm9l"))))
+              (sha256 (base32 "1bzw4ddwq9fb37xzl9zcvyvghnv7whvyxw4ikxg2vzv7958j88z2"))))
     (build-system binary-build-system)
     (arguments
      (list
@@ -105,4 +105,3 @@ GitHub Actions, and other GitHub features to your terminal.")
 AWS services from the command line.")
     (home-page "https://aws.amazon.com/cli/")
     (license license:asl2.0)))
-
