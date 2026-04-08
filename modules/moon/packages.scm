@@ -18,7 +18,7 @@
 (define-public claude-cli
   (package
     (name "claude-cli")
-    (version "2.1.77")
+    (version "2.1.92")
     (source (origin
               (method url-fetch)
               (uri (string-append
