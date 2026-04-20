@@ -18,13 +18,13 @@
 (define-public claude-cli
   (package
     (name "claude-cli")
-    (version "2.1.92")
+    (version "2.1.114")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/"
                     version "/linux-x64/claude"))
-              (sha256 (base32 "1bzw4ddwq9fb37xzl9zcvyvghnv7whvyxw4ikxg2vzv7958j88z2"))))
+              (sha256 (base32 "0zy2fcyp4rlx8rwcngfvn80byh71hl22yyzwgzhnpc6y2q4lpg8j"))))
     (build-system binary-build-system)
     (arguments
      (list
