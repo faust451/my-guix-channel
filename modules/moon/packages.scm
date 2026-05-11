@@ -69,6 +69,30 @@ GitHub Actions, and other GitHub features to your terminal.")
     (home-page "https://cli.github.com/")
     (license expat)))
 
+(define-public gleam
+  (package
+    (name "gleam")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/gleam-lang/gleam/releases/download/v"
+             version "/gleam-v" version "-x86_64-unknown-linux-musl.tar.gz"))
+       (sha256
+        (base32 "1s6c9wm1hdwx6s1y80y5ibfh856w8kyfqqf2y44z507byfxnmijx"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("gleam" "bin/gleam"))))
+    (supported-systems '("x86_64-linux"))
+    (synopsis "Friendly language for building type-safe, scalable systems")
+    (description
+     "Gleam is a friendly language for building type-safe, scalable systems!
+It compiles to Erlang and JavaScript, and has a robust type system, a powerful
+build tool, and excellent tooling.")
+    (home-page "https://gleam.run")
+    (license license:asl2.0)))
+
 (define-public awscli
   (package
     (name "awscli")
