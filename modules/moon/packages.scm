@@ -93,6 +93,40 @@ build tool, and excellent tooling.")
     (home-page "https://gleam.run")
     (license license:asl2.0)))
 
+(define-public zig
+  (package
+    (name "zig")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ziglang.org/download/" version
+             "/zig-x86_64-linux-" version ".tar.xz"))
+       (sha256
+        (base32 "001xp99bx6nlidc5142h89fkkxipykxzvwz6a65v8x23lxj9dr3h"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan
+       '(("." "share/zig/"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'symlink-bin
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (symlink (string-append out "/share/zig/zig")
+                        (string-append bin "/zig"))))))))
+    (supported-systems '("x86_64-linux"))
+    (synopsis "General-purpose programming language and toolchain")
+    (description
+     "Zig is a general-purpose programming language and toolchain for
+maintaining robust, optimal, and reusable software.  It is also a drop-in
+C/C++ compiler that supports cross-compilation out of the box.")
+    (home-page "https://ziglang.org")
+    (license license:expat)))
+
 (define-public awscli
   (package
     (name "awscli")
