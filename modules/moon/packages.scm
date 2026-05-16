@@ -103,7 +103,7 @@ build tool, and excellent tooling.")
        (uri (string-append
              "https://ziglang.org/builds/zig-x86_64-linux-" version ".tar.xz"))
        (sha256
-        (base16 "df39f7482ea8a60d19d973a7b42167c74457fca844cace4953dedb73af7c033a"))))
+        (base32 "0fh3gjpp7nyyad4wxjj4m3y5fi67cwhv99vkv4chv9m85r4gfffz"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
