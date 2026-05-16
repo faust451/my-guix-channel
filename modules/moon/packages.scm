@@ -96,15 +96,14 @@ build tool, and excellent tooling.")
 (define-public zig
   (package
     (name "zig")
-    (version "0.16.0")
+    (version "0.17.0-dev.305+bdfbf432d")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://ziglang.org/download/" version
-             "/zig-x86_64-linux-" version ".tar.xz"))
+             "https://ziglang.org/builds/zig-x86_64-linux-" version ".tar.xz"))
        (sha256
-        (base32 "001xp99bx6nlidc5142h89fkkxipykxzvwz6a65v8x23lxj9dr3h"))))
+        (base16 "df39f7482ea8a60d19d973a7b42167c74457fca844cace4953dedb73af7c033a"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
