@@ -45,9 +45,9 @@
     (home-page "https://docs.anthropic.com/en/docs/claude-code")
     (license (nonfree "https://www.anthropic.com/legal/consumer-terms"))))
 
-(define-public github-cli
+(define-public gh-bin
   (package
-    (name "github-cli")
+    (name "gh-bin")
     (version "2.63.2")
     (source
      (origin
