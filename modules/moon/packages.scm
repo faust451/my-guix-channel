@@ -126,6 +126,30 @@ C/C++ compiler that supports cross-compilation out of the box.")
     (home-page "https://ziglang.org")
     (license license:expat)))
 
+(define-public zig-zls
+  (package
+    (name "zig-zls")
+    (version "0.17.0-dev.37+e4bfcd4a")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://builds.zigtools.org/zls-x86_64-linux-"
+             version ".tar.xz"))
+       (sha256
+        (base32 "18g7q5p0brgnwpcwrjj851m2ms2gmix2yqry40ksd37pka0d27df"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("zls" "bin/zls"))))
+    (supported-systems '("x86_64-linux"))
+    (synopsis "Zig Language Server")
+    (description
+     "ZLS is a language server for Zig, providing features such as code
+completion, go-to-definition, diagnostics, and refactoring for editors that
+support the Language Server Protocol.")
+    (home-page "https://github.com/zigtools/zls")
+    (license license:expat)))
+
 (define-public awscli
   (package
     (name "awscli")
